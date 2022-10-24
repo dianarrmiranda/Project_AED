@@ -171,6 +171,9 @@ static void solution_2(int move_number, int position, int speed, int final_posit
       speed;
       move_number++;
       position += speed;
+    }else if(speed > max_road_speed[position + speed]){
+      speed--;
+      position--;
     }else{
       speed--;
       move_number++;
