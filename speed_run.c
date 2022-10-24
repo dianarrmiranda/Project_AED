@@ -163,11 +163,11 @@ static void solution_2(int move_number, int position, int speed, int final_posit
     solution_1_count++;
     solution_1.positions[move_number] = position;
 
-    if((position + speed + 1) < 800 && speed + 1 <= max_road_speed[position + speed + 1]){
+    if((position + speed + 1) <= final_position && speed + 1 <= max_road_speed[position + speed + 1]){
       speed++;
       move_number++;
       position += speed;
-    }else if((position + speed) < 800 && speed <= max_road_speed[position + speed]){
+    }else if((position + speed) <= final_position && speed <= max_road_speed[position + speed]){
       speed;
       move_number++;
       position += speed;
@@ -176,7 +176,17 @@ static void solution_2(int move_number, int position, int speed, int final_posit
       move_number++;
       position += speed;
     }
+
+    
   }
+
+    if (move_number < solution_1_best.n_moves)
+    {
+      solution_1_best = solution_1;
+      solution_1_best.n_moves = move_number;
+    }
+    
+  return;
 
 }
 
@@ -190,7 +200,7 @@ static void solve_1(int final_position)
   solution_1_elapsed_time = cpu_time();
   solution_1_count = 0ul;
   solution_1_best.n_moves = final_position + 100;
-  solution_1_otimized_recursion(0, 0, 0, final_position);
+  solution_2(0, 0, 0, final_position);
   solution_1_elapsed_time = cpu_time() - solution_1_elapsed_time;
 }
 
