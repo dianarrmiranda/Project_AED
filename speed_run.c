@@ -157,37 +157,54 @@ static void solution_1_otimized_recursion(int move_number, int position, int spe
 
 static void solution_2(int move_number, int position, int speed, int final_position)
 {
+  
 
-  while (position != final_position)
+  while ((position != final_position))
   {
     solution_1_count++;
     solution_1.positions[move_number] = position;
 
-    if((position + speed + 1) <= final_position && speed + 1 <= max_road_speed[position + speed + 1]){
-      speed++;
-      move_number++;
-      position += speed;
-    }else if((position + speed) <= final_position && speed <= max_road_speed[position + speed]){
-      speed;
-      move_number++;
-      position += speed;
-    }else if(speed > max_road_speed[position + speed]){
-      speed--;
-      position--;
-    }else{
-      speed--;
-      move_number++;
-      position += speed;
-    }
+    if(final_position - (position + 1) != speed){
+      if((position + speed + 1) < final_position && speed + 1 <= max_road_speed[position + speed + 1]){
+        speed++;
+        move_number++;
+        position += speed;
+      }else if((position + speed) < final_position && speed <= max_road_speed[position + speed]){
+        move_number++;
+        position += speed;
+      }else if(speed > max_road_speed[position + speed]){
+        speed--;
+        position--;
+      }else{
+        speed--;
+        move_number++;
+        position += speed;
+      }
 
+    }else{
+      if(speed > 1){
+        speed--;
+        move_number++;
+        position += speed;
+      }else{
+        speed = 1;
+        move_number++;
+        position += speed;
+      }
+    }
+    
     
   }
 
-    if (move_number < solution_1_best.n_moves)
-    {
-      solution_1_best = solution_1;
-      solution_1_best.n_moves = move_number;
-    }
+  move_number++;
+  solution_1_count++;
+  solution_1.positions[move_number] = position;
+
+  if (move_number < solution_1_best.n_moves)
+  {
+    solution_1_best = solution_1;
+    solution_1_best.n_moves = move_number;
+  }
     
   return;
 
