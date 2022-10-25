@@ -159,6 +159,7 @@ static void solution_1_otimized_recursion(int move_number, int position, int spe
 
 static int respect_limits(int position, int speed,int final_position) //verificar se não execede a velocidade em nenhuma estrada por onde passa
 {
+  solution_1_count++;
   for(int s = speed; s >= 1; s--){
     for(int i = 1;i<=s;i++){
       if(((position + i) > final_position) || max_road_speed[position + i] < s ){
