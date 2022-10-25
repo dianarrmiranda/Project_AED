@@ -165,22 +165,28 @@ static void solution_2(int move_number, int position, int speed, int final_posit
     solution_1.positions[move_number] = position;
 
     if(final_position - (position + 1) != speed){
-      if((position + speed + 1) < final_position && speed + 1 <= max_road_speed[position + speed + 1]){
+      if((position + speed + 1) < final_position && speed + 1 <= max_road_speed[position + (speed + 1)]){
         speed++;
         move_number++;
         position += speed;
       }else if((position + speed) < final_position && speed <= max_road_speed[position + speed]){
         move_number++;
         position += speed;
-      }else if(speed > max_road_speed[position + speed]){
-        speed--;
-        position--;
       }else{
-        speed--;
-        move_number++;
-        position += speed;
+        if(speed-1 <= max_road_speed[position + (speed-1)])
+        {
+          speed--;
+          move_number++;
+          position += speed;
+        }
+        else {
+          if(speed > 1){
+            speed--;
+            position--;
+          }
+        }
       }
-
+      
     }else{
       if(speed > 1){
         speed--;
