@@ -165,10 +165,7 @@ static void solution_2(int move_number, int position, int speed, int final_posit
     solution_1.positions[move_number] = position;
 
     if(final_position - (position + 1) != speed){
-<<<<<<< HEAD
-      if((position + speed + 1) < final_position && speed + 1 <= max_road_speed[position + (speed + 1)]){
-=======
-      if((position + speed + 1) < final_position && speed + 1 <= max_road_speed[position + speed + 1]){
+      if((position + (speed + 1)) < final_position && speed + 1 <= max_road_speed[position + (speed + 1)]){
         /* 
         if ((position+ speed +2) - (position+speed +1) >2 ){ // então, se a diferença entre x casas à frente e x-1 casas à frent2 for maior que um determinado valor,
          // já não vai conseguir travar a tempo, pelo que tem de voltar a trás para decidir melhor
@@ -176,34 +173,25 @@ static void solution_2(int move_number, int position, int speed, int final_posit
           position--;
         } 
         else{*/
->>>>>>> 26c7709787c718e3ee5d1f2897673f216bdbbbe3
         speed++;
         move_number++;
         position += speed;
       }else if((position + speed) < final_position && speed <= max_road_speed[position + speed]){
         move_number++;
         position += speed;
-      }else{
-        if(speed-1 <= max_road_speed[position + (speed-1)])
-        {
+      }else if(speed-1 <= max_road_speed[position + (speed-1)]){
+        speed--;
+        move_number++;
+        position += speed;
+      }
+      else {
+        if(speed > 1){
           speed--;
-          move_number++;
-          position += speed;
-        }
-        else {
-          if(speed > 1){
-            speed--;
-            position--;
-          }
+          position--;
         }
       }
-<<<<<<< HEAD
       
-    }else{
-=======
-
-    }else{ // conditions to brake in final positions
->>>>>>> 26c7709787c718e3ee5d1f2897673f216bdbbbe3
+    }else { // conditions to brake in final positions
       if(speed > 1){
         speed--;
         move_number++;
