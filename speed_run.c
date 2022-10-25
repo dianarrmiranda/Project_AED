@@ -30,6 +30,7 @@
 #include "../P02/elapsed_time.h"
 #include "make_custom_pdf.c"
 
+
 //
 // road stuff
 //
@@ -49,6 +50,7 @@ static void init_road_speeds(void)
       max_road_speed[i] = _min_road_speed_;
     if (max_road_speed[i] > _max_road_speed_)
       max_road_speed[i] = _max_road_speed_;
+    
   }
 }
 
@@ -155,11 +157,25 @@ static void solution_1_otimized_recursion(int move_number, int position, int spe
   */
 }
 
+static int respect_limits(int position, int speed,int final_position) //verificar se não execede a velocidade em nenhuma estrada por onde passa
+{
+  for(int s = speed; s >= 1; s--){
+    for(int i = 1;i<=s;i++){
+      if(((position + i) > final_position) || max_road_speed[position + i] < s ){
+        return 0;
+      }
+    }
+    position += s;
+  }
+  return 1;
+}
+
 static void solution_2(int move_number, int position, int speed, int final_position)
 {
   
 
   while ((position != final_position))
+
   {
     solution_1_count++;
     solution_1.positions[move_number] = position;
@@ -179,7 +195,7 @@ static void solution_2(int move_number, int position, int speed, int final_posit
       }else if((position + speed) < final_position && speed <= max_road_speed[position + speed]){
         move_number++;
         position += speed;
-      }else if(speed-1 <= max_road_speed[position + (speed-1)]){
+      }else if((position + (speed -1)) < final_position && speed-1 <= max_road_speed[position + (speed-1)]){
         speed--;
         move_number++;
         position += speed;
@@ -220,6 +236,56 @@ static void solution_2(int move_number, int position, int speed, int final_posit
 
 }
 
+static void solution_2_corrigida(int move_number, int position, int speed, int final_position)
+{
+
+  while ((position != final_position))
+  {
+    solution_1_count++;
+    solution_1.positions[move_number] = position;
+
+    if (respect_limits(position, speed + 1, final_position) == 1) //verificar se pode subir a velocidade
+    {
+      speed++;
+      move_number++;
+      position += speed;
+
+    }else if(respect_limits(position, speed, final_position) == 1) //verificar se pode manter a velocidade
+    { 
+      move_number++;
+      position += speed;
+    }else if(respect_limits(position, speed-1, final_position) == 1) //verificar se aumentar subir a velocidade
+    {
+      speed--;
+      move_number++;
+      position += speed;
+    }else{
+      
+      if(speed > 1){
+          speed--;
+          position--;
+        }
+    }
+
+  }
+
+  //para  pintar a casa final
+  move_number++; 
+  solution_1_count++;
+  solution_1.positions[move_number] = position;
+
+  //número melhor de moves
+  if (move_number < solution_1_best.n_moves)
+  {
+    solution_1_best = solution_1;
+    solution_1_best.n_moves = move_number;
+  }
+  
+    
+  return;
+
+}
+
 static void solve_1(int final_position)
 {
   if (final_position < 1 || final_position > _max_road_size_)
@@ -230,7 +296,7 @@ static void solve_1(int final_position)
   solution_1_elapsed_time = cpu_time();
   solution_1_count = 0ul;
   solution_1_best.n_moves = final_position + 100;
-  solution_2(0, 0, 0, final_position);
+  solution_2_corrigida(0, 0, 0, final_position);
   solution_1_elapsed_time = cpu_time() - solution_1_elapsed_time;
 }
 
@@ -306,7 +372,7 @@ int main(int argc, char *argv[argc + 1])
       printf("                                |");
     }
     // second solution method (less bad)
-    // ...
+    
 
     // done
     printf("\n");
