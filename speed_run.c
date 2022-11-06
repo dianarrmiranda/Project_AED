@@ -274,6 +274,7 @@ int main(int argc, char *argv[argc + 1])
   // run all solution methods for all interesting sizes of the problem
   final_position = 1;
   solution_1_elapsed_time = 0.0;
+  /*comment 5 phrases below when storing results in a .txt file */
   printf("    + --- ---------------- --------- +\n");
   printf("    |                plain recursion |\n");
   printf("--- + --- ---------------- --------- +\n");
@@ -282,7 +283,8 @@ int main(int argc, char *argv[argc + 1])
   while (final_position <= _max_road_size_ /* && final_position <= 20*/)
   {
     print_this_one = (final_position == 10 || final_position == 20 || final_position == 50 || final_position == 100 || final_position == 200 || final_position == 400 || final_position == 800) ? 1 : 0;
-    printf("%3d |", final_position);
+    printf("%3d |", final_position); // remove this line when printing to a .txt file and uncomment next one
+    // printf("%3d  ", final_position); 
     // first solution method (very bad)
     if (solution_1_elapsed_time < _time_limit_)
     {
@@ -292,12 +294,15 @@ int main(int argc, char *argv[argc + 1])
         sprintf(file_name, "%03d_1.pdf", final_position);
         make_custom_pdf_file(file_name, final_position, &max_road_speed[0], solution_1_best.n_moves, &solution_1_best.positions[0], solution_1_elapsed_time, solution_1_count, "Plain recursion");
       }
-      printf(" %3d %16lu %9.3e |", solution_1_best.n_moves, solution_1_count, solution_1_elapsed_time);
+      printf(" %3d %16lu %9.3e |", solution_1_best.n_moves, solution_1_count, solution_1_elapsed_time); // remove this line when printing to a .txt file and uncomment next one
+      // printf(" %3d %16lu %9.3e |", solution_1_best.n_moves, solution_1_count, solution_1_elapsed_time);
+
     }
     else
     {
       solution_1_best.n_moves = -1;
-      printf("                                |");
+      printf("                                |"); // remove this line when printing to a .txt file and uncomment next one
+      // printf("                                 "); 
     }
     // second solution method (less bad)
     
