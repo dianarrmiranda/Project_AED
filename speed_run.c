@@ -102,9 +102,13 @@ static void solution_1_recursion(int move_number, int position, int speed, int f
     }
 }
 
-static void solution_1_otimized_recursion(int move_number, int position, int speed, int final_position)
+
+
+
+static void solution_1_otimized_recursion( int move_number, int position, int speed, int final_position)
 {
   int i, new_speed;
+  
 
   // record move
   solution_1_count++;
@@ -135,26 +139,13 @@ static void solution_1_otimized_recursion(int move_number, int position, int spe
           return;
         }
         // was current state already visited (backtrack)
-
+        //if(solution_1.positions[move_number] < position ){ //vai até aos 60 em segundos
+          //return;
+        //}
         solution_1_otimized_recursion(move_number + 1, position + new_speed, new_speed, final_position);
       }
     }
 
-  /*
-    se speed + 1 <= max_road_speed[position + speed + 1]
-      -> newspeed = speed + 1
-
-      solution_1_recursion(move_number + 1,position + new_speed,new_speed,final_position);
-
-    else if (speed <= max_road_speed[position + speed])
-      -> newspeed = speed
-      solution_1_recursion(move_number + 1,position + new_speed,new_speed,final_position);
-
-    else {
-      -> newspeed = speed - 1
-      solution_1_recursion(move_number + 1,position + new_speed,new_speed,final_position);
-    }
-  */
 }
 
 static int respect_limits(int position, int speed,int final_position) //verificar se não execede a velocidade em nenhuma estrada por onde passa
@@ -172,72 +163,6 @@ static int respect_limits(int position, int speed,int final_position) //verifica
 }
 
 static void solution_2(int move_number, int position, int speed, int final_position)
-{
-  
-
-  while ((position != final_position))
-
-  {
-    solution_1_count++;
-    solution_1.positions[move_number] = position;
-
-    if(final_position - (position + 1) != speed){
-      if((position + (speed + 1)) < final_position && speed + 1 <= max_road_speed[position + (speed + 1)]){
-        /* 
-        if ((position+ speed +2) - (position+speed +1) >2 ){ // então, se a diferença entre x casas à frente e x-1 casas à frent2 for maior que um determinado valor,
-         // já não vai conseguir travar a tempo, pelo que tem de voltar a trás para decidir melhor
-          speed--;
-          position--;
-        } 
-        else{*/
-        speed++;
-        move_number++;
-        position += speed;
-      }else if((position + speed) < final_position && speed <= max_road_speed[position + speed]){
-        move_number++;
-        position += speed;
-      }else if((position + (speed -1)) < final_position && speed-1 <= max_road_speed[position + (speed-1)]){
-        speed--;
-        move_number++;
-        position += speed;
-      }
-      else {
-        if(speed > 1){
-          speed--;
-          position--;
-        }
-      }
-      
-    }else { // conditions to brake in final positions
-      if(speed > 1){
-        speed--;
-        move_number++;
-        position += speed;
-      }else{
-        speed = 1;
-        move_number++;
-        position += speed;
-      }
-    }
-    
-    
-  }
-
-  move_number++;
-  solution_1_count++;
-  solution_1.positions[move_number] = position;
-
-  if (move_number < solution_1_best.n_moves)
-  {
-    solution_1_best = solution_1;
-    solution_1_best.n_moves = move_number;
-  }
-    
-  return;
-
-}
-
-static void solution_2_corrigida(int move_number, int position, int speed, int final_position)
 {
 
   while ((position != final_position))
@@ -294,11 +219,12 @@ static void solve_1(int final_position)
     fprintf(stderr, "solve_1: bad final_position\n");
     exit(1);
   }
+          
   solution_1_elapsed_time = cpu_time();
   solution_1_count = 0ul;
   solution_1_best.n_moves = final_position + 100;
-  solution_1_recursion(0,0,0,final_position); // chamar a solução do professor original
-  // solution_2_corrigida(0, 0, 0, final_position);
+  solution_1_otimized_recursion(0,0,0,final_position); // chamar a solução do professor original
+  // solution_2(0, 0, 0, final_position);
   solution_1_elapsed_time = cpu_time() - solution_1_elapsed_time;
 }
 
