@@ -135,12 +135,14 @@ static void solution_1_otimized_recursion( int move_number, int position, int sp
       if (i > new_speed)
       {
         // is worse than current solution? (move_number >>)
-        if(move_number > solution_1_best.n_moves){ //vai até aos 60 em segundos
+        if(move_number > solution_1_best.n_moves){ //Verifica se o número de moves atual é maior do que o número de moves já guardado da melhot solução, se for não vale a pena continuar a fazer essa solução
+          return;
+        }
+
+        if(solution_1.positions[move_number] < solution_1_best.positions[move_number]){ //Verifica se já conseguiu passar numa certa solução com uma velocidade maior, se sim não vale a pena continuar a fazer essa solução
           return;
         }
         // was current state already visited (backtrack)
-        //if(solution_1.positions[move_number] < position ){ //vai até aos 60 em segundos
-          //return;
         //}
         solution_1_otimized_recursion(move_number + 1, position + new_speed, new_speed, final_position);
       }
@@ -275,16 +277,19 @@ int main(int argc, char *argv[argc + 1])
   final_position = 1;
   solution_1_elapsed_time = 0.0;
   /*comment 5 phrases below when storing results in a .txt file */
+ 
+ /*
   printf("    + --- ---------------- --------- +\n");
   printf("    |                plain recursion |\n");
   printf("--- + --- ---------------- --------- +\n");
   printf("  n | sol            count  cpu time |\n");
-  printf("--- + --- ---------------- --------- +\n");
+  printf("--- + --- ---------------- --------- +\n");*/
+
   while (final_position <= _max_road_size_ /* && final_position <= 20*/)
   {
     print_this_one = (final_position == 10 || final_position == 20 || final_position == 50 || final_position == 100 || final_position == 200 || final_position == 400 || final_position == 800) ? 1 : 0;
-    printf("%3d |", final_position); // remove this line when printing to a .txt file and uncomment next one
-    // printf("%3d  ", final_position); 
+    //printf("%3d |", final_position); // remove this line when printing to a .txt file and uncomment next one
+    printf("%3d  ", final_position); 
     // first solution method (very bad)
     if (solution_1_elapsed_time < _time_limit_)
     {
@@ -294,15 +299,15 @@ int main(int argc, char *argv[argc + 1])
         sprintf(file_name, "%03d_1.pdf", final_position);
         make_custom_pdf_file(file_name, final_position, &max_road_speed[0], solution_1_best.n_moves, &solution_1_best.positions[0], solution_1_elapsed_time, solution_1_count, "Plain recursion");
       }
-      printf(" %3d %16lu %9.3e |", solution_1_best.n_moves, solution_1_count, solution_1_elapsed_time); // remove this line when printing to a .txt file and uncomment next one
-      // printf(" %3d %16lu %9.3e |", solution_1_best.n_moves, solution_1_count, solution_1_elapsed_time);
+      //printf(" %3d %16lu %9.3e |", solution_1_best.n_moves, solution_1_count, solution_1_elapsed_time); // remove this line when printing to a .txt file and uncomment next one
+      printf(" %3d %16lu %9.3e ", solution_1_best.n_moves, solution_1_count, solution_1_elapsed_time);
 
     }
     else
     {
       solution_1_best.n_moves = -1;
-      printf("                                |"); // remove this line when printing to a .txt file and uncomment next one
-      // printf("                                 "); 
+      //printf("                                |"); // remove this line when printing to a .txt file and uncomment next one
+      printf("                                 "); 
     }
     // second solution method (less bad)
     
@@ -320,7 +325,7 @@ int main(int argc, char *argv[argc + 1])
     else
       final_position += 20;
   }
-  printf("--- + --- ---------------- --------- +\n");
+  //printf("--- + --- ---------------- --------- +\n");
   return 0;
 #undef _time_limit_
 }
