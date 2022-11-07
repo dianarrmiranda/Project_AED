@@ -1,6 +1,7 @@
 clear;clc;
 DATA = load("SolucaoProf1hour.txt");
 IF_1 = load("SolucaoProfOtimizada1hour_1IF.txt");
+IF_3 = load("SolucaoProfOtimizada_So_Seg_IF.txt");
 
 n = DATA(:,1); % selecionar dos dados do .txt a primeira coluna com os valores de n
 t = DATA(:,4); % selecionar dos dados do .txt a quarta coluna com os valores de n
@@ -73,7 +74,7 @@ grid on
 hold off
 t800_log_1if = [800 1]* Coefs;
 t800_1if = 10^t800_log_1if / 3600 / 24 /365;
-fprintf("O programa com 1 if iria demorar %0.3d a executar se corresse até à posição 800.\n",t800_1if)
+fprintf("O programa com 1 if iria demorar %d a executar se corresse até à posição 800.\n",t800_1if);
 
 n= 1:800;
 for i=n
@@ -82,13 +83,43 @@ for i=n
 end
 t_log_1if =log10(t_1if);
 
+%% construir o grafico para só segundo if
+n_3if = IF_3(:,1);
+t_3if = IF_3(:,4);
+
+figure(6)
+plot(n_3if,log10(t_3if),"b")
+t_log_3if =log10(t_3if);
+N = [n_3if(20:end) 1+0*n_3if(20:end)];
+Coefs = pinv(N)*t_log_3if(20:end); % matriz de regressão
+
+hold on
+Ntotal = [n_3if n_3if*0+1];
+% regra de ajuste aos dados
+plot(n_3if, Ntotal*Coefs, "k")
+title("Tempo de execução do algoritmo com 3 if");
+xlabel("n");
+ylabel("log10 (t)")
+grid on
+hold off
+t800_log_3if = [800 1]* Coefs;
+t800_3if = 10^t800_log_3if / 3600 / 24 /365;
+fprintf("O programa só com o segundo IF iria demorar %d a executar se corresse até à posição 800.\n",t800_3if);
+
+n= 1:800;
+for i=n
+    t_3if(i)= [i 1]*Coefs;
+    t_3if(i)= 10.^t_3if(i) / 3600 / 24 /365;
+end
+t_log_3if =log10(t_3if);
 %% Todos os gráficos dos diferentes algoritmos para 800 n's 
-figure(5)
+figure(7)
 hold on
 plot(n,t_log, "k")
 plot(n,t_log_1if, "r")
+plot(n,t_log_3if, "b")
 xlabel("n");
-ylabel("t (s)");
+ylabel("log (t)");
 title("Reta de ajuste dos diferentes algoritmos para n=800")
-legend("Original","1 IF")
+legend("Original","IF do n saltos","IF das velocidades","2 IF juntos")
 grid on
