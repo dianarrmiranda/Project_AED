@@ -135,13 +135,14 @@ static void solution_1_otimized_recursion( int move_number, int position, int sp
       if (i > new_speed)
       {
         // is worse than current solution? (move_number >>)
-        if(move_number > solution_1_best.n_moves){ //Verifica se o número de moves atual é maior do que o número de moves já guardado da melhot solução, se for não vale a pena continuar a fazer essa solução
+        if(move_number >= solution_1_best.n_moves){ //Verifica se o número de moves atual é maior do que o número de moves já guardado da melhot solução, se for não vale a pena continuar a fazer essa solução
           return;
         }
 
         if(solution_1.positions[move_number] < solution_1_best.positions[move_number]){ //Verifica se já conseguiu passar numa certa solução com uma velocidade maior, se sim não vale a pena continuar a fazer essa solução
           return;
         }
+
         // was current state already visited (backtrack)
         //}
         solution_1_otimized_recursion(move_number + 1, position + new_speed, new_speed, final_position);
@@ -182,17 +183,16 @@ static void solution_2(int move_number, int position, int speed, int final_posit
     { 
       move_number++;
       position += speed;
-    }else if(respect_limits(position, speed-1, final_position) == 1) //verificar se aumentar subir a velocidade
+    }else if(respect_limits(position, speed-1, final_position) == 1) //verificar se pode diminuir a velocidade
     {
       speed--;
       move_number++;
       position += speed;
-    }else{
-      
-      if(speed > 1){
-          speed--;
-          position--;
-        }
+    }else{ //se não puder fazer nada, volta atrás
+      if(speed>1){
+        speed--;
+        position--;
+      }
     }
 
   }
@@ -202,12 +202,9 @@ static void solution_2(int move_number, int position, int speed, int final_posit
   solution_1_count++;
   solution_1.positions[move_number] = position;
 
-  //número melhor de moves
-  if (move_number < solution_1_best.n_moves)
-  {
-    solution_1_best = solution_1;
-    solution_1_best.n_moves = move_number;
-  }
+  solution_1_best = solution_1;
+  solution_1_best.n_moves = move_number;
+  
   
     
   return;
@@ -226,7 +223,7 @@ static void solve_1(int final_position)
   solution_1_count = 0ul;
   solution_1_best.n_moves = final_position + 100;
   solution_1_otimized_recursion(0,0,0,final_position); // chamar a solução do professor original
-  // solution_2(0, 0, 0, final_position);
+  //solution_2(0, 0, 0, final_position);
   solution_1_elapsed_time = cpu_time() - solution_1_elapsed_time;
 }
 
