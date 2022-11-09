@@ -102,9 +102,6 @@ static void solution_1_recursion(int move_number, int position, int speed, int f
     }
 }
 
-
-
-
 static void solution_1_otimized_recursion( int move_number, int position, int speed, int final_position)
 {
   int i, new_speed;
@@ -126,7 +123,7 @@ static void solution_1_otimized_recursion( int move_number, int position, int sp
     return;
   }
   // no, try all legal speeds
-  for (new_speed = speed - 1; new_speed <= speed + 1; new_speed++)
+  for (new_speed = speed + 1; new_speed >= speed - 1; new_speed--) //Nesta solução ele vai tentar acelarar primeiro, depois manter a velocidade e por fim desacelerar para tentar chegar mais rápido ao fim, enquanto que na solução anterior ele tentava primeiro desacelerar, depois manter a velocidade e por fim acelerar.
 
     if (new_speed >= 1 && new_speed <= _max_road_speed_ && position + new_speed <= final_position)
     {
