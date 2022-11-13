@@ -219,8 +219,8 @@ static void solve_1(int final_position)
   solution_1_elapsed_time = cpu_time();
   solution_1_count = 0ul;
   solution_1_best.n_moves = final_position + 100;
-  //solution_1_otimized_recursion(0,0,0,final_position); // chamar a solução do professor original
-  solution_2(0, 0, 0, final_position);
+  solution_1_otimized_recursion(0,0,0,final_position); // chamar a solução do professor original
+  //solution_2(0, 0, 0, final_position);
   solution_1_elapsed_time = cpu_time() - solution_1_elapsed_time;
 }
 
