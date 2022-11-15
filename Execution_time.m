@@ -3,6 +3,7 @@ DATA = load("SolucaoProf1hour.txt");
 SoFor = load("SolProfOtimizadaFor.txt");
 ForE1If= load("SolProfOtimizadaForE1If.txt");
 ForE2If= load("SolProfOtimizadaForE2If.txt");
+ForE2If107403= load("SolProfOtimizadaForE2If_107403.txt");
 
 n = DATA(:,1); % selecionar dos dados do .txt a primeira coluna com os valores de n
 t = DATA(:,4); % selecionar dos dados do .txt a quarta coluna com os valores de n
@@ -77,7 +78,7 @@ grid on
 hold off
 t800_log_for = [800 1]* Coefs;
 t800_for = 10^t800_log_for / 3600 / 24 /365;
-fprintf("O programa com 1 if iria demorar %d a executar se corresse até à posição 800.\n",t800_for);
+fprintf("O programa com o FOR iria demorar %d a executar se corresse até à posição 800.\n",t800_for);
 
 n= 1:800;
 for i=n
@@ -108,7 +109,7 @@ grid on
 hold off
 t800_log_F1if = [800 1]* Coefs;
 t800_F1if = 10^t800_log_F1if / 3600 / 24 /365;
-fprintf("O programa só com o segundo IF iria demorar %d a executar se corresse até à posição 800.\n",t800_F1if);
+fprintf("O programa com o FOR e um IF iria demorar %d a executar se corresse até à posição 800.\n",t800_F1if);
 
 n= 1:800;
 for i=n
@@ -120,26 +121,30 @@ t_log_F1if =log10(t_F1if);
 %% construir o grafico para a 2º melhoria: FOR mais 2 IF
 n_F2if = ForE2If(:,1);
 t_F2if = ForE2If(:,4);
+n_F2if107403 = ForE2If107403(:,1);
+t_F2if107403 = ForE2If107403(:,4);
 
 figure(6)
 plot(n_F2if,log10(t_F2if),"m")
+
 t_log_F2if =log10(t_F2if);
 N = [n_F2if(20:end) 1+0*n_F2if(20:end)];
 Coefs = pinv(N)*t_log_F2if(20:end); % matriz de regressão
 
 hold on
+plot(n_F2if107403,log10(t_F2if107403),"MarkerFaceColor","#D95319")
 Ntotal = [n_F2if n_F2if*0+1];
 % regra de ajuste aos dados
 P2= plot(n_F2if, Ntotal*Coefs, "k");
 title("Tempo de execução do algoritmo com a 3ª melhoria");
 xlabel("n");
 ylabel("log10 (t)")
-legend(P2,"Reta de ajuste")
+legend("107457","107403","Reta de ajuste")
 grid on
 hold off
 t800_log_F2if = [800 1]* Coefs;
 t800_F2if = 10^t800_log_F2if / 3600 / 24 /365;
-fprintf("O programa só com o segundo IF iria demorar %d a executar se corresse até à posição 800.\n",t800_F2if);
+fprintf("O programa com o FOR e dois IF iria demorar %d a executar se corresse até à posição 800.\n",t800_F2if);
 
 n= 1:800;
 for i=n
