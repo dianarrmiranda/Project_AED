@@ -64,6 +64,14 @@ typedef struct
   int positions[1 + _max_road_size_]; // the positions (the first one must be zero)
 } solution_t;
 
+typedef struct
+{
+  int move_number;                        // the number of moves (the number of positions is one more than the number of moves)
+  int speed;
+  int position; // the positions (the first one must be zero)
+} solution3_t;
+
+
 //
 // the (very inefficient) recursive solution given to the students
 //
@@ -71,6 +79,9 @@ typedef struct
 static solution_t solution_1, solution_1_best;
 static double solution_1_elapsed_time; // time it took to solve the problem
 static unsigned long solution_1_count; // effort dispended solving the problem
+
+//Solution 3
+static solution3_t solution3;
 
 static void solution_1_recursion(int move_number, int position, int speed, int final_position)
 {
@@ -152,7 +163,7 @@ static int respect_limits(int position, int speed,int final_position) //verifica
 {
   solution_1_count++;
   for(int s = speed; s >= 1; s--){
-    for(int i = 1;i<=s;i++){
+    for(int i = 0;i<=s;i++){
       if(((position + i) > final_position) || max_road_speed[position + i] < s ){
         return 0;
       }
@@ -180,29 +191,83 @@ static void solution_2(int move_number, int position, int speed, int final_posit
     { 
       move_number++;
       position += speed;
-    }else if(respect_limits(position, speed-1, final_position) == 1) //verificar se pode diminuir a velocidade
+    }else //pode diminuir a velocidade
     {
       speed--;
       move_number++;
       position += speed;
-    }else{ //se não puder fazer nada, volta atrás
-      if(speed>1){
-        speed--;
-        position--;
-      }
     }
 
   }
 
-  //para  pintar a casa final
-  move_number++; 
-  solution_1_count++;
   solution_1.positions[move_number] = position;
-
+  //para  pintar a casa final
   solution_1_best = solution_1;
   solution_1_best.n_moves = move_number;
-  
-  
+    
+  return;
+
+}
+
+
+static int respect_limitsV2(int position, int speed,int final_position) //verificar se não execede a velocidade em nenhuma estrada por onde passa
+{
+  solution_1_count++;
+
+  if(((position + (speed*(speed+1))/2) > final_position)){
+    return 1;
+  }
+  for(int s = speed; s >= 1; s--){
+    for(int i = 0;i<=s;i++){
+      if (max_road_speed[position + i] < s ){
+        return 2;
+      }
+    }
+    position += s;
+  }
+  return 0;
+}
+
+static void solution_3(int move_number, int position, int speed, int final_position)
+{
+  int a = 0;
+  while ((position != final_position))
+  {
+    solution_1_count++;
+    solution_1.positions[move_number] = position;
+
+    int res = respect_limitsV2(position, speed + 1, final_position);
+
+    if (res == 1 && a == 0){
+      solution3.move_number = move_number;
+      solution3.position = position;
+      solution3.speed = speed; 
+      a = 1;  
+    }
+
+    if (res == 0) //verificar se pode subir a velocidade
+    {
+      speed++;
+      move_number++;
+      position += speed;
+
+    }else if(respect_limitsV2(position, speed, final_position) == 0) //verificar se pode manter a velocidade
+    { 
+      move_number++;
+      position += speed;
+    }else //pode diminuir a velocidade
+    {
+      speed--;
+      move_number++;
+      position += speed;
+    }
+
+  }
+
+  solution_1.positions[move_number] = position;
+  //para  pintar a casa final
+  solution_1_best = solution_1;
+  solution_1_best.n_moves = move_number;
     
   return;
 
@@ -219,8 +284,24 @@ static void solve_1(int final_position)
   solution_1_elapsed_time = cpu_time();
   solution_1_count = 0ul;
   solution_1_best.n_moves = final_position + 100;
-  solution_1_otimized_recursion(0,0,0,final_position); // chamar a solução do professor original
-  //solution_2(0, 0, 0, final_position);
+  //solution_1_otimized_recursion(0,0,0,final_position); // chamar a solução do professor original
+  solution_2(0, 0, 0, final_position);
+  solution_1_elapsed_time = cpu_time() - solution_1_elapsed_time;
+}
+
+static void solve_3(int final_position)
+{
+  if (final_position < 1 || final_position > _max_road_size_)
+  {
+    fprintf(stderr, "solve_1: bad final_position\n");
+    exit(1);
+  }
+          
+  solution_1_elapsed_time = cpu_time();
+  solution_1_count = 0ul;
+  solution_1_best.n_moves = final_position + 100;
+  solution_3(solution3.move_number, solution3.position, solution3.speed, final_position);
+  
   solution_1_elapsed_time = cpu_time() - solution_1_elapsed_time;
 }
 
@@ -235,7 +316,7 @@ static void example(void)
   srandom(0xAED2022);
   init_road_speeds();
   final_position = 30;
-  solve_1(final_position);
+  solve_3(final_position);
   make_custom_pdf_file("example.pdf", final_position, &max_road_speed[0], solution_1_best.n_moves, &solution_1_best.positions[0], solution_1_elapsed_time, solution_1_count, "Plain recursion");
   printf("mad road speeds:");
   for (i = 0; i <= final_position; i++)
@@ -281,16 +362,16 @@ int main(int argc, char *argv[argc + 1])
 
   while (final_position <= _max_road_size_ /* && final_position <= 20*/)
   {
-    print_this_one = (final_position == 10 || final_position == 20 || final_position == 50 || final_position == 100 || final_position == 200 || final_position == 400 || final_position == 800) ? 1 : 0;
+    print_this_one = (final_position == 10 || final_position == 20 || final_position == 50 || final_position == 100 || final_position == 200 || final_position == 400 || final_position == 28 || final_position == 29 || final_position == 800) ? 1 : 0;
     //printf("%3d |", final_position); // remove this line when printing to a .txt file and uncomment next one
     printf("%3d  ", final_position); 
     // first solution method (very bad)
     if (solution_1_elapsed_time < _time_limit_)
     {
-      solve_1(final_position);
+      solve_3(final_position);
       if (print_this_one != 0)
       {
-        sprintf(file_name, "%03d_1.pdf", final_position);
+        sprintf(file_name, "%03d_3.pdf", final_position);
         make_custom_pdf_file(file_name, final_position, &max_road_speed[0], solution_1_best.n_moves, &solution_1_best.positions[0], solution_1_elapsed_time, solution_1_count, "Plain recursion");
       }
       //printf(" %3d %16lu %9.3e |", solution_1_best.n_moves, solution_1_count, solution_1_elapsed_time); // remove this line when printing to a .txt file and uncomment next one
