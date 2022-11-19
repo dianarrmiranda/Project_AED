@@ -12,29 +12,22 @@
 //   N.Mec. 107457  Name: Diana Raquel Rodrigues Miranda
 //   N.Mec. 107403 Name: João NUno da Silva Luís
 //
-
 //
 // static configuration
 //
-
 #define _max_road_size_ 800 // the maximum problem size
 #define _min_road_speed_ 2  // must not be smaller than 1, shouldnot be smaller than 2
 #define _max_road_speed_ 9  // must not be larger than 9 (only because of the PDF figure)
-
 //
 // include files --- as this is a small project, we include the PDF generation code directly from make_custom_pdf.c
 //
-
 #include <math.h>
 #include <stdio.h>
 #include "../P02/elapsed_time.h"
 #include "make_custom_pdf.c"
-
-
 //
 // road stuff
 //
-
 static int max_road_speed[1 + _max_road_size_]; // positions 0.._max_road_size_
 
 static void init_road_speeds(void)
@@ -143,7 +136,7 @@ static void solution_1_otimized_recursion( int move_number, int position, int sp
     return;
   }
   // no, try all legal speeds
-  for (new_speed = speed + 1; new_speed >= speed - 1; new_speed--) //Nesta solução ele vai tentar acelarar primeiro, depois manter a velocidade e por fim desacelerar para tentar chegar mais rápido ao fim, enquanto que na solução anterior ele tentava primeiro desacelerar, depois manter a velocidade e por fim acelerar.
+  for (new_speed = speed + 1; new_speed >= speed - 1; new_speed--)
 
     if (new_speed >= 1 && new_speed <= _max_road_speed_ && position + new_speed <= final_position)
     {
@@ -151,17 +144,14 @@ static void solution_1_otimized_recursion( int move_number, int position, int sp
         ;
       if (i > new_speed)
       {
-        // is worse than current solution? (move_number >>)
-        if(move_number >= solution_1_best.n_moves){ //Verifica se o número de moves atual é maior do que o número de moves já guardado da melhot solução, se for não vale a pena continuar a fazer essa solução
+        if(move_number >= solution_1_best.n_moves){ 
           return;
         }
 
-        if(solution_1.positions[move_number] < solution_1_best.positions[move_number]){ //Verifica se já conseguiu passar numa certa solução com uma velocidade maior, se sim não vale a pena continuar a fazer essa solução
+        if(solution_1.positions[move_number] < solution_1_best.positions[move_number]){ 
           return;
         }
 
-        // was current state already visited (backtrack)
-        //}
         solution_1_otimized_recursion(move_number + 1, position + new_speed, new_speed, final_position);
       }
     }
@@ -218,14 +208,15 @@ static void solution2(int move_number, int position, int speed, int final_positi
 
 }
 
-
 static int respect_limitsV2(int position, int speed,int final_position) //verificar se não execede a velocidade em nenhuma estrada por onde passa
 {
   solution_3_count++;
-
+  //verifica se a soma de as posições ao desacelerar não ultrapassa a posição final
   if(((position + (speed*(speed+1))/2) > final_position)){
     return 1;
   }
+
+  //Verifica se a velocidade máxima de cada segmento de estrada por onde passa é respeitada
   for(int s = speed; s >= 1; s--){
     for(int i = 0;i<=s;i++){
       if (max_road_speed[position + i] < s ){
@@ -245,16 +236,16 @@ static void solution_3(int move_number, int position, int speed, int final_posit
     solution_3_count++;
     solution3.positions[move_number] = position;
 
-    int res = respect_limitsV2(position, speed + 1, final_position);
+    int res = respect_limitsV2(position, speed + 1, final_position); //Iniciar a variável res verificando se pode acelerar
 
     if (res == 1 && a == 0){
       solution3.move_number = move_number;
       solution3.position = position;
       solution3.speed = speed; 
-      a = 1;  
+      a = 1;  //Flag para só executar este if a primeira vez que ele tiver de travar por já se encontrar perto da posição final
     }
 
-    if (res == 0) //verificar se pode subir a velocidade
+    if (res == 0)
     {
       speed++;
       move_number++;
