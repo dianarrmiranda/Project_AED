@@ -3,7 +3,10 @@ DATA = load("SolucaoProf1hour.txt");
 SoFor = load("SolProfOtimizadaFor.txt");
 ForE1If= load("SolProfOtimizadaForE1If.txt");
 ForE2If= load("SolProfOtimizadaForE2If.txt");
-ForE2If107403= load("SolProfOtimizadaForE2If_107403.txt");
+%ForE2If107403= load("SolProfOtimizadaForE2If_107403.txt"); não chegámos a
+%fazer graficos com sobreposição de NMEC's
+Sol2 = load("Solution2_107457.txt");
+Sol3 = load("Solution3_107457.txt");
 
 n = DATA(:,1); % selecionar dos dados do .txt a primeira coluna com os valores de n
 t = DATA(:,4); % selecionar dos dados do .txt a quarta coluna com os valores de n
@@ -121,30 +124,30 @@ t_log_F1if =log10(t_F1if);
 %% construir o grafico para a 2º melhoria: FOR mais 2 IF
 n_F2if = ForE2If(:,1);
 t_F2if = ForE2If(:,4);
-n_F2if107403 = ForE2If107403(:,1);
-t_F2if107403 = ForE2If107403(:,4);
 
 figure(6)
 plot(n_F2if,log10(t_F2if),"m")
+TempoRealPos800_log = log10(t_F2if(100,1)); % ir buscar o valor real do tempo demorado na posição 800 (mas em log)
+TempoRealPos800 = 10^TempoRealPos800_log / 3600 / 24 /365; % converter o valor
+fprintf("A solução com um FOR e dois IF demorou %d a correr até à posição 800.\n",TempoRealPos800);
 
 t_log_F2if =log10(t_F2if);
 N = [n_F2if(20:end) 1+0*n_F2if(20:end)];
 Coefs = pinv(N)*t_log_F2if(20:end); % matriz de regressão
 
 hold on
-plot(n_F2if107403,log10(t_F2if107403),"MarkerFaceColor","#D95319")
 Ntotal = [n_F2if n_F2if*0+1];
 % regra de ajuste aos dados
-P2= plot(n_F2if, Ntotal*Coefs, "k");
+plot(n_F2if, Ntotal*Coefs, "k");
 title("Tempo de execução do algoritmo com a 3ª melhoria");
 xlabel("n");
 ylabel("log10 (t)")
-legend("107457","107403","Reta de ajuste")
+legend("107457","Reta de ajuste")
 grid on
 hold off
 t800_log_F2if = [800 1]* Coefs;
 t800_F2if = 10^t800_log_F2if / 3600 / 24 /365;
-fprintf("O programa com o FOR e dois IF iria demorar %d a executar se corresse até à posição 800.\n",t800_F2if);
+fprintf("O programa com o FOR e dois IF iria demorar %d a executar se corresse até à posição 800 (calculada pela reta de ajuste).\n",t800_F2if);
 
 n= 1:800;
 for i=n
@@ -164,3 +167,96 @@ ylabel("log (t)");
 title("Reta de ajuste das diferentes melhorias até n=800")
 legend("Reta de ajuste original","1ª melhoria","2ª melhoria","3º melhoria");
 grid on
+hold off
+%% construir o grafico para a 2º solução
+n_Sol2 = Sol2(:,1);
+t_Sol2 = Sol2(:,4);
+figure(20)
+plot(n_Sol2,t_Sol2,"r") % gráfico super exponencial a partir do x=40
+title("Tempo de execução da 2º solução");
+xlabel("n");
+ylabel("t (s)")
+grid on
+
+figure(8)
+plot(n_Sol2,log10(t_Sol2),"MarkerFaceColor","#D95319")
+TempoRPos800_log = log10(t_Sol2(100,1)); % ir buscar o valor real do tempo demorado na posição 800 (mas em log)
+TempoRPos800 = 10^TempoRPos800_log / 3600 / 24 /365; % converter o valor
+fprintf("A solução 2 demorou %d a correr até à posição 800.\n",TempoRPos800);
+
+t_log_Sol2 =log10(t_Sol2);
+N = [n_Sol2(20:end) 1+0*n_Sol2(20:end)];
+Coefs = pinv(N)*t_log_Sol2(20:end); % matriz de regressão
+
+hold on
+Ntotal = [n_Sol2 n_Sol2*0+1];
+% regra de ajuste aos dados
+plot(n_Sol2, Ntotal*Coefs, "k");
+title("Tempo de execução do 2º algoritmo");
+xlabel("n");
+ylabel("log10 (t)")
+legend("107457","Reta de ajuste")
+grid on
+hold off
+t800_log_Sol2 = [800 1]* Coefs;
+t800_Sol2 = 10^t800_log_Sol2 / 3600 / 24 /365;
+fprintf("A solução 2 iria demorar %d a executar se corresse até à posição 800.(calculada pela reta de ajuste)\n",t800_Sol2);
+
+n= 1:800;
+for i=n
+    t_Sol2(i)= [i 1]*Coefs;
+    t_Sol2(i)= 10.^t_Sol2(i) / 3600 / 24 /365;
+end
+t_log_Sol2 =log10(Sol2);
+%% construir o grafico para a 3º solução
+n_Sol3 = Sol3(:,1);
+t_Sol3 = Sol3(:,4);
+figure(30)
+plot(n_Sol3,t_Sol3,"k") % gráfico super exponencial a partir do x=40
+title("Tempo de execução da 3º solução");
+xlabel("n");
+ylabel("t (s)")
+grid on
+
+figure(9)
+plot(n_Sol3,log10(t_Sol3),"Color","#EDB120")
+TRPos800_log = log10(t_Sol3(100,1)); % ir buscar o valor real do tempo demorado na posição 800 (mas em log)
+TRPos800 = 10^TRPos800_log / 3600 / 24 /365; % converter o valor
+fprintf("A solução 3 demorou %d a correr até à posição 800.\n",TRPos800);
+
+t_log_Sol3 =log10(t_Sol3);
+N = [n_Sol3(20:end) 1+0*n_Sol3(20:end)];
+Coefs = pinv(N)*t_log_Sol3(20:end); % matriz de regressão
+
+hold on
+Ntotal = [n_Sol3 n_Sol3*0+1];
+% regra de ajuste aos dados
+plot(n_Sol3, Ntotal*Coefs, "k");
+title("Tempo de execução do 3º algoritmo");
+xlabel("n");
+ylabel("log10 (t)")
+legend("107457","Reta de ajuste")
+grid on
+hold off
+t800_log_Sol3 = [800 1]* Coefs;
+t800_Sol3 = 10^t800_log_Sol3 / 3600 / 24 /365;
+fprintf("A solução 2 iria demorar %d a executar se corresse até à posição 800.(calculada pela reta de ajuste)\n",t800_Sol3);
+
+n= 1:800;
+for i=n
+    t_Sol3(i)= [i 1]*Coefs;
+    t_Sol3(i)= 10.^t_Sol3(i) / 3600 / 24 /365;
+end
+t_log_Sol3 =log10(Sol3);
+%% Gráfico das 3 soluções desenvolvidas
+% figure(10)
+% hold on
+% plot(n,t_log_F2if, "Color","#ED1717")
+% plot(n,t_log_Sol2, "Color","#F6830C")
+% plot(n,t_log_Sol3, "Color","#FFED00")
+% xlabel("n");
+% ylabel("log (t)");
+% title("Reta de ajuste dps 3 algoritmos desenvolvidos até n=800")
+% legend("1º algoritmo","2º algoritmo","3º algoritmo");
+% grid on
+% hold off
