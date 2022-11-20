@@ -1,17 +1,14 @@
 clear;clc;
-DATA = load("SolucaoProf1hour.txt");
-ForE2If= load("SolProfOtimizadaForE2If.txt");
+%% Calcular a complexidade computacional do algoritmo fornecido.
+%Para a posição 50, tínhamos que o effort era
+countOriginal =127966647148  
+t50Original =6.121e+02 % Supostamente não interessa, porque o algoritmo visita todos os nós
 
-n = DATA(:,1); % selecionar dos dados do .txt a primeira coluna com os valores de n
-count = DATA(:,3); % selecionar dos dados do .txt a terceira coluna com os valores de n
+% Temos antes de fazer para a otimizada
+t800Sol1 =1.206e-05 
+countSol1 = 538
 
-figure(1)
-stem(n,count);
-
-
-%% construir o grafico para a 2ª melhoria: FOR mais 2 IF
-n_F2if = ForE2If(:,1);
-count_F2if = ForE2If(:,3);
-
-figure(2)
-bar(n_F2if,count_F2if);
+%% tentativa da complexidade computacional para a solution_1_otimized_recursion
+n = 800
+n + log(n + n) % algo está errado porque para as 800 posições, teria de dar 538, ou seja,
+% effort <1 em alguma parte do código, o que não pode acontecer
