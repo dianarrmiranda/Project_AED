@@ -172,11 +172,20 @@ hold off
 n_Sol2 = Sol2(:,1);
 t_Sol2 = Sol2(:,4);
 figure(20)
-plot(n_Sol2,t_Sol2,"r") % gráfico super exponencial a partir do x=40
+plot(n_Sol2,t_Sol2,"r") 
 title("Tempo de execução da 2º solução");
 xlabel("n");
 ylabel("t (s)")
 grid on
+hold on
+N = [n_Sol2(20:end) 1+0*n_Sol2(20:end)];
+Coefs = pinv(N)*t_Sol2(20:end); % matriz de regressão
+
+hold on
+Ntotal = [n_Sol2 n_Sol2*0+1];
+% regra de ajuste aos dados
+plot(n_Sol2, Ntotal*Coefs, "k");
+
 
 figure(8)
 plot(n_Sol2,log10(t_Sol2),"MarkerFaceColor","#D95319")
@@ -212,7 +221,8 @@ t_log_Sol2 =log10(Sol2);
 n_Sol3 = Sol3(:,1);
 t_Sol3 = Sol3(:,4);
 figure(30)
-plot(n_Sol3,t_Sol3,"k") % gráfico super exponencial a partir do x=40
+plot(n_Sol3,t_Sol3,"k")
+axis([0 800 0 0.000010]) % faria sentido acrecentar um axis propositado para parecer constante??
 title("Tempo de execução da 3º solução");
 xlabel("n");
 ylabel("t (s)")
@@ -249,6 +259,7 @@ for i=n
 end
 t_log_Sol3 =log10(Sol3);
 %% Gráfico das 3 soluções desenvolvidas
+%% Não está feito devido às diferentes escalas para já
 % figure(10)
 % hold on
 % plot(n,t_log_F2if, "Color","#ED1717")
