@@ -5,7 +5,6 @@ ForE1If= load("SolProfOtimizadaForE1If.txt");
 ForE2If= load("SolProfOtimizadaForE2If.txt");
 Sol2 = load("Solution2_107457.txt");
 Sol3 = load("Solution3_107457.txt");
-ExecutionCERTO= load("Solution3_new_107457.txt");
 
 n = DATA(:,1); % selecionar dos dados do .txt a primeira coluna com os valores de n
 t = DATA(:,4); % selecionar dos dados do .txt a quarta coluna com os valores de n
@@ -54,7 +53,6 @@ for i=n
     t(i)= 10.^t(i) / 3600 / 24 /365;
 end
 t_log =log10(t);
-
 %% construir o grafico para a modificação do FOR
 n_for = SoFor(:,1);
 t_for = SoFor(:,4);
@@ -83,7 +81,6 @@ for i=n
     t_for(i)= 10.^t_for(i) / 3600 / 24 /365;
 end
 t_log_for =log10(t_for);
-
 %% construir o grafico para a 2º melhoria: FOR mais 1 IF
 n_F1if = ForE1If(:,1);
 t_F1if = ForE1If(:,4);
@@ -143,7 +140,7 @@ for i=n
     t_F2if(i)= 10.^t_F2if(i) / 3600 / 24 /365;
 end
 t_log_F2if =log10(t_F2if);
-%% Todos os gráficos dos diferentes algoritmos para 800 n's 
+%% Todos os gráficos dos diferentes algoritmos para 800 n's da solução 1 
 figure(7)
 hold on
 plot(n,t_log, "k")
@@ -180,45 +177,8 @@ t_Sol3 = Sol3(:,4);
 figure(9)
 plot(n_Sol3,t_Sol3,"k")
 %axis([0 800 0 0.000010]) % faria sentido acrecentar um axis propositado para parecer constante??
-title("Tempo de execução da 3º solução");
+title("Tempo de execução da 3º algoritmo");
 xlabel("n");
 ylabel("t (s)")
 grid on
-hold on
-n_SolCERTO = ExecutionCERTO(:,1);
-t_SolCERTO = ExecutionCERTO(:,4);
-plot(n_SolCERTO,t_SolCERTO,"m")
-
-figure(10)
-plot(n_Sol3,log10(t_Sol3),"Color","#EDB120")
-TRPos800_log = log10(t_Sol3(100,1)); % ir buscar o valor real do tempo demorado na posição 800 (mas em log)
-TRPos800 = 10^TRPos800_log / 3600 / 24 /365; % converter o valor
-fprintf("A solução 3 demorou %d a correr até à posição 800.\n",TRPos800);
-
-t_log_Sol3 =log10(t_Sol3);
-N = [n_Sol3(20:end) 1+0*n_Sol3(20:end)];
-Coefs = pinv(N)*t_log_Sol3(20:end); % matriz de regressão
-
-hold on
-Ntotal = [n_Sol3 n_Sol3*0+1];
-% regra de ajuste aos dados
-plot(n_Sol3, Ntotal*Coefs, "k");
-title("Tempo de execução do 3º algoritmo");
-xlabel("n");
-ylabel("log10 (t)")
-legend("107457","Reta de ajuste")
-grid on
-hold off
-%% Gráfico das 3 soluções desenvolvidas
-%% Não está feito devido às diferentes escalas para já
-% figure(10)
-% hold on
-% plot(n,t_log_F2if, "Color","#ED1717")
-% plot(n,t_log_Sol2, "Color","#F6830C")
-% plot(n,t_log_Sol3, "Color","#FFED00")
-% xlabel("n");
-% ylabel("log (t)");
-% title("Reta de ajuste dps 3 algoritmos desenvolvidos até n=800")
-% legend("1º algoritmo","2º algoritmo","3º algoritmo");
-% grid on
-% hold off
+legend("107457")
