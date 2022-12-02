@@ -374,7 +374,7 @@ int main(int argc,char *argv[argc + 1])
   printf("--- + --- ---------------- --------- +\n");
   while(final_position <= _max_road_size_/* && final_position <= 20*/)
   {
-    print_this_one = (final_position == 10 || final_position == 20 || final_position == 50 || final_position == 100 || final_position == 200 || final_position == 400 || final_position == 800) ? 1 : 0;
+   /*print_this_one = (final_position == 10 || final_position == 20 || final_position == 50 || final_position == 100 || final_position == 200 || final_position == 400 || final_position == 800) ? 1 : 0;
     printf("%3d |",final_position);
     //printf("%3d ",final_position);
     // first solution method (very bad)
@@ -393,13 +393,13 @@ int main(int argc,char *argv[argc + 1])
     {
       solution_1_best.n_moves = -1;
       printf("                                |");
-    }
+    }*/ 
 
-    print_this_one = (final_position == 10 || final_position == 20 || final_position == 50 || final_position == 100 || final_position == 200 || final_position == 400 || final_position == 800) ? 1 : 0;
-    printf("     | %3d |",final_position);
+    //print_this_one = (final_position == 10 || final_position == 20 || final_position == 50 || final_position == 100 || final_position == 200 || final_position == 400 || final_position == 800) ? 1 : 0;
+    //printf("     | %3d |",final_position);
     
     //second solution method (less bad)
-    
+    /*
     if(solution_2_elapsed_time < _time_limit_)
     {
       solve_2(final_position);
@@ -415,9 +415,9 @@ int main(int argc,char *argv[argc + 1])
       solution_2_best.n_moves = -1;
       printf("                                |");
     }
-
-    //print_this_one = (final_position == 10 || final_position == 20 || final_position == 50 || final_position == 100 || final_position == 200 || final_position == 400 || final_position == 800) ? 1 : 0;
-    //printf("     | %3d |",final_position);
+    */
+    print_this_one = (final_position == 10 || final_position == 20 || final_position == 50 || final_position == 100 || final_position == 200 || final_position == 400 || final_position == 800) ? 1 : 0;
+    printf("     | %3d |",final_position);
     //third solution method (less bad)
     if(solution_3_elapsed_time < _time_limit_)
     {
@@ -435,7 +435,7 @@ int main(int argc,char *argv[argc + 1])
       solution_3_best.move_number = -1;
       printf("                                |");
     }
-
+  
     // done
     printf("\n");
     fflush(stdout);
