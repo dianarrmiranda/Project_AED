@@ -5,6 +5,9 @@ ForE1If= load("SolProfOtimizadaForE1If.txt");
 ForE2If= load("SolProfOtimizadaForE2If.txt");
 Sol2 = load("Solution2_107457.txt");
 Sol3 = load("Solution3_107457.txt");
+ForE2If_107403= load("Solution1_107403.txt");
+Sol2_107403 = load("Solution2_107403.txt");
+Sol3_107403 = load("Solution3_107403.txt");
 
 n = DATA(:,1); % selecionar dos dados do .txt a primeira coluna com os valores de n
 t = DATA(:,4); % selecionar dos dados do .txt a quarta coluna com os valores de n
@@ -113,23 +116,26 @@ t_log_F1if =log10(t_F1if);
 %% construir o grafico para a 2º melhoria: FOR mais 2 IF
 n_F2if = ForE2If(:,1);
 t_F2if = ForE2If(:,4);
+n_F2if_107403 = ForE2If_107403(:,1);
+t_F2if_107403 = ForE2If_107403(:,4);
 
 figure(6)
-plot(n_F2if,log10(t_F2if),"m")
+plot(n_F2if,log10(t_F2if))
 TempoRealPos800_log = log10(t_F2if(100,1)); % ir buscar o valor real do tempo demorado na posição 800 (mas em log)
-
+hold on
 t_log_F2if =log10(t_F2if);
 N = [n_F2if(20:end) 1+0*n_F2if(20:end)];
 Coefs = pinv(N)*t_log_F2if(20:end); % matriz de regressão
 
-hold on
+plot(n_F2if_107403,log10(t_F2if_107403))
+
 Ntotal = [n_F2if n_F2if*0+1];
 % regra de ajuste aos dados
 plot(n_F2if, Ntotal*Coefs, "k");
 title("Tempo de execução do algoritmo com a 3ª melhoria");
 xlabel("n");
 ylabel("log10 (t)")
-legend("107457","Reta de ajuste")
+legend("107457","107403","Reta de ajuste (107457)")
 grid on
 hold off
 t800_log_F2if = [800 1]* Coefs;
@@ -156,6 +162,9 @@ hold off
 %% construir o grafico para a 2º solução
 n_Sol2 = Sol2(:,1);
 t_Sol2 = Sol2(:,4);
+
+n_Sol2_107403 = Sol2_107403(:,1);
+t_Sol2_107403 = Sol2_107403(:,4);
 figure(8)
 plot(n_Sol2,t_Sol2,"r") 
 title("Tempo de execução do 2º algoritmo");
@@ -163,6 +172,7 @@ xlabel("n");
 ylabel("t (s)")
 grid on
 hold on
+plot(n_Sol2_107403,t_Sol2_107403,"b") 
 N = [n_Sol2(20:end) 1+0*n_Sol2(20:end)];
 Coefs = pinv(N)*t_Sol2(20:end); % matriz de regressão
 
@@ -170,15 +180,19 @@ hold on
 Ntotal = [n_Sol2 n_Sol2*0+1];
 % regra de ajuste aos dados
 plot(n_Sol2, Ntotal*Coefs, "k");
-legend("107457","Reta de ajuste")
+legend("107457","107403","Reta de ajuste (107457)")
 %% construir o grafico para a 3º solução
 n_Sol3 = Sol3(:,1);
 t_Sol3 = Sol3(:,4);
+
+n_Sol3_107403 = Sol3_107403(:,1);
+t_Sol3_107403 = Sol3_107403(:,4);
 figure(9)
 plot(n_Sol3,t_Sol3,"k")
-%axis([0 800 0 0.000010]) % faria sentido acrecentar um axis propositado para parecer constante??
+hold on
+plot(n_Sol3_107403,t_Sol3_107403)
 title("Tempo de execução da 3º algoritmo");
 xlabel("n");
 ylabel("t (s)")
 grid on
-legend("107457")
+legend("107457","107403")
